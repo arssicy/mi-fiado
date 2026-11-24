@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#16161a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Mi Fiado · Libreta de cuentas para tu negocio</title>
+<style>
+:root{--bg:#f5f3ef;--card:#fff;--ink:#1d1d1f;--mut:#7a766f;--line:#e7e3dc;--acc:#e8762c;--acc2:#fdeadb;--acc3:#f7b27f;--ok:#2e8b57;--okbg:#e3f3ea;--warn:#c47a12;--warnbg:#fdf0dc;--bad:#c23b3b;--badbg:#fbe3e3;--dark:#16161a}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+.top{background:var(--dark);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 18px 16px;position:sticky;top:0;z-index:5}
+.top .biz{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc3);font-weight:700}
+.top h1{font-size:22px;font-weight:800;margin-top:2px}
+.wrap{max-width:600px;margin:0 auto;padding:14px 14px 70px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:6}
+.nav button{flex:1;border:0;background:none;padding:6px 0;font-size:11px;font-weight:700;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.nav button b{font-size:20px;line-height:1}
+.nav button.on{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+.t{display:flex;gap:12px;align-items:flex-start}
+.t .i{flex:1;min-width:0}
+.t .i b{font-size:16px}
+.t .i p{color:var(--mut);font-size:13.5px;margin-top:2px}
+.t .amt{text-align:right;font-weight:800;font-size:18px;white-space:nowrap}
+.t .amt small{display:block;font-size:11px;color:var(--mut);font-weight:700}
+.debe{color:var(--bad)}.favor{color:var(--ok)}
+.pill{display:inline-block;font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px;margin-top:6px;margin-right:4px}
+.p-pend{background:var(--warnbg);color:var(--warn)}.p-ok{background:var(--okbg);color:var(--ok)}.p-no{background:var(--badbg);color:var(--bad)}
+.acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.acts button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;cursor:pointer}
+.acts .wa{background:#25d366;border-color:#25d366;color:#fff}
+.acts .pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.fab{position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));height:58px;padding:0 22px;border-radius:999px;background:var(--acc);color:#fff;border:0;font-size:17px;font-weight:800;box-shadow:0 10px 25px rgba(232,118,44,.45);cursor:pointer;z-index:7}
+.empty{text-align:center;color:var(--mut);padding:36px 10px}
+.empty>b:first-child{display:block;font-size:40px;margin-bottom:8px}
+h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:18px 2px 8px;font-weight:800}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.stat small{color:var(--mut);font-size:12px;font-weight:700}
+.stat b{display:block;font-size:22px;margin-top:4px}
+.stat.big{grid-column:1/3;background:var(--dark);color:#fff;border:0}
+.stat.big small{color:var(--acc3)}
+.stat.big b{font-size:30px}
+.stat.big p{color:#cfcac2;font-size:13px;margin-top:4px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.row span{color:var(--mut)}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin-bottom:12px}
+.seg button{flex:1;border:0;background:none;padding:8px;border-radius:9px;font-weight:700;color:var(--mut);cursor:pointer}
+.seg button.on{background:var(--acc2);color:var(--acc)}
+.search{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;margin-bottom:10px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;z-index:20}
+.modal.show{display:flex}
+.sheet{background:#fff;width:100%;max-width:600px;margin:0 auto;border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+.sheet h3{font-size:19px;margin-bottom:12px}
+label.f{display:block;font-size:12px;font-weight:800;color:var(--mut);margin:12px 0 5px;text-transform:uppercase;letter-spacing:.06em}
+.inp{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg)}
+.inp.big{font-size:24px;font-weight:800;padding:14px}
+.two{display:flex;gap:10px}.two>div{flex:1}
+.btn{width:100%;border:0;border-radius:14px;padding:15px;font-weight:800;font-size:16px;margin-top:16px;cursor:pointer;background:var(--acc);color:#fff}
+.btn.sec{background:var(--bg);color:var(--ink);border:1px solid var(--line);margin-top:8px}
+.btn.wa{background:#25d366}
+.btn.del{background:none;color:var(--bad);margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer}
+.chips button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.toast{position:fixed;top:16px;left:50%;transform:translate(-50%,-90px);background:var(--dark);color:#fff;padding:12px 18px;border-radius:999px;font-weight:700;z-index:30;transition:.25s;white-space:nowrap}
+.toast.show{transform:translate(-50%,0)}
+.hint{font-size:13px;color:var(--mut);line-height:1.45;margin-top:6px}
+.hint.warn{color:var(--bad);font-weight:700}
+.hide{display:none!important}
+.bar{height:8px;background:var(--bg);border-radius:8px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--acc)}
+.welcome{background:var(--dark);color:#fff;border-radius:20px;padding:22px;margin-bottom:12px}
+.welcome h3{font-size:22px;margin-bottom:6px}
+.welcome p{color:#d8d4cc;line-height:1.5}
+.sum{background:var(--dark);color:#fff;border-radius:18px;padding:16px 18px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.sum small{color:var(--acc3);font-size:11px;letter-spacing:.12em;font-weight:800;text-transform:uppercase}
+.sum b{display:block;font-size:30px;margin-top:2px}
+.sum p{color:#cfcac2;font-size:13px;text-align:right}
+.mv{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.mv:last-child{border:0}
+.mv .d{flex:1;min-width:0}
+.mv .d b{font-size:14.5px}
+.mv .d p{color:var(--mut);font-size:12.5px;margin-top:2px}
+.mv .m{text-align:right;font-weight:800;white-space:nowrap}
+.mv .m small{display:block;color:var(--mut);font-weight:600;font-size:11.5px}
+.mv button{border:0;background:none;color:var(--mut);font-size:12px;font-weight:700;cursor:pointer;padding:2px 0}
+.calc{font-size:13px;color:var(--acc);font-weight:800;margin-top:5px;min-height:18px}
+</style>
+</head>
+<body>
+<div class="top"><div class="biz" id="bizName">Mi negocio</div><h1 id="title">Cuentas</h1></div>
+<div class="wrap">
+
+<section id="v-cuentas">
+ <div id="welcome"></div>
+ <div id="sum"></div>
+ <input class="search" id="q" placeholder="Buscar cliente por nombre o teléfono">
+ <div class="seg" id="fSeg"><button data-fl="deuda" class="on">Con deuda</button><button data-fl="atr">Atrasados</button><button data-fl="todos">Todos</button></div>
+ <div id="clist"></div>
+</section>
+
+<section id="v-caja" class="hide">
+ <div class="seg" id="cajaSeg"><button data-p="dia" class="on">Hoy</button><button data-p="semana">Semana</button><button data-p="mes">Mes</button></div>
+ <div id="caja"></div>
+</section>
+
+<section id="v-ajustes" class="hide">
+ <h2>Tu negocio</h2>
+ <div class="card">
+  <label class="f" style="margin-top:0">Nombre del negocio</label><input class="inp" id="sBiz">
+  <label class="f">Mensaje de cobro (WhatsApp)</label><textarea class="inp" id="sMsg" rows="5"></textarea>
+  <p class="hint">Podés usar: {cliente} {saldo} {detalle} {negocio}</p>
+  <div class="two"><div><label class="f">Atrasado después de</label><input class="inp" id="sDias" type="number" inputmode="numeric"><p class="hint">días sin pagar</p></div><div><label class="f">Límite de fiado</label><input class="inp" id="sLim" type="number" inputmode="numeric"><p class="hint">por cliente (0 = sin límite)</p></div></div>
+  <button class="btn" id="saveCfg">Guardar</button>
+ </div>
+ <h2>Copia de seguridad</h2>
+ <div class="card">
+  <p class="hint" style="margin:0 0 4px">Tus datos se guardan en este celular. Hacé una copia cada tanto y guardala en tu WhatsApp, Drive o mail: si cambiás de celu, la importás y listo.</p>
+  <p class="hint" id="lastBk"></p>
+  <button class="btn" id="exp">Descargar copia de seguridad</button>
+  <button class="btn sec" id="impBtn">Importar copia</button><input type="file" id="imp" accept=".json,application/json" class="hide">
+ </div>
+ <h2>Instalar en el celular</h2>
+ <div class="card"><p class="hint" style="margin:0"><b>Android (Chrome):</b> menú ⋮ → “Agregar a la pantalla principal” o “Instalar app”.<br><b>iPhone (Safari):</b> botón compartir → “Agregar a inicio”.<br>Así la abrís como cualquier app, incluso sin internet.</p></div>
+ <button class="btn del" id="wipe">Borrar todos los datos</button>
+</section>
+</div>
+
+<button class="fab" id="fab">+ Fiado</button>
+<div class="nav">
+ <button data-v="cuentas" class="on"><b>📒</b>Cuentas</button>
+ <button data-v="caja"><b>💰</b>Caja</button>
+ <button data-v="ajustes"><b>⚙️</b>Ajustes</button>
+</div>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='mifiado_v1';
+const DEF={biz:'Mi negocio',msg:'¡Hola {cliente}! Te paso el resumen de tu cuenta en {negocio}.\nSaldo pendiente: *{saldo}*\n{detalle}\nCuando puedas, pasá a abonar o transferime. ¡Gracias! 🙌',dias:15,lim:0,clientes:[],movs:[],seen:false,bk:0};
+let db;
+function load(){try{db=JSON.parse(localStorage.getItem(KEY))}catch(e){db=null}if(!db)db=JSON.parse(JSON.stringify(DEF));for(const k in DEF)if(db[k]===undefined)db[k]=JSON.parse(JSON.stringify(DEF[k]))}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){toast('No se pudo guardar en este navegador')}}
+load();
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const money=n=>(n<0?'-':'')+'$ '+Math.round(Math.abs(n||0)).toLocaleString('es-AR');
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
+const today=()=>iso(new Date());
+const shortDay=s=>parse(s).toLocaleDateString('es-AR',{day:'numeric',month:'short'});
+const dd=s=>{const[,m,d]=s.split('-');return d+'/'+m};
+const daysSince=s=>Math.round((parse(today())-parse(s))/864e5);
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._);t._=setTimeout(()=>t.classList.remove('show'),1800)}
+function phone(t){let d=String(t||'').replace(/\D/g,'');if(!d)return'';if(d.startsWith('0'))d=d.slice(1);if(d.startsWith('15'))d=d.slice(2);if(!d.startsWith('54'))d='549'+d;else if(!d.startsWith('549'))d='549'+d.slice(2);return d}
+// Calculadora: acepta "1500+800*2" o "1.500"
+function calc(s){s=String(s||'').replace(/\s/g,'').replace(/x/gi,'*');if(!s)return 0;s=s.replace(/\.(?=\d{3}(\D|$))/g,'').replace(/,/g,'.');if(!/^[+\-]?[0-9.]+([+\-*][0-9.]+)*$/.test(s))return NaN;let tot=0;s.split(/(?=[+-])/).forEach(t=>{let sg=1;if(t[0]=='-'){sg=-1;t=t.slice(1)}else if(t[0]=='+')t=t.slice(1);tot+=sg*t.split('*').reduce((a,b)=>a*(parseFloat(b)||0),1)});return Math.round(tot*100)/100}
+
+let view='cuentas',cajaP='dia',fl='deuda';
+const cl=id=>db.clientes.find(c=>c.id==id);
+const movsOf=id=>db.movs.filter(m=>m.c==id).sort((a,b)=>a.f.localeCompare(b.f)||a.ts-b.ts);
+function saldo(id){return db.movs.reduce((a,m)=>m.c==id?a+(m.tipo=='fiado'?+m.m:-m.m):a,0)}
+// Fiados impagos (los pagos cancelan primero lo más viejo)
+function impagos(id){const ms=movsOf(id);let pool=ms.filter(m=>m.tipo=='pago').reduce((a,m)=>a+ +m.m,0);const out=[];ms.filter(m=>m.tipo=='fiado').forEach(m=>{if(pool>=+m.m){pool-=+m.m}else{out.push({...m,resta:+m.m-pool});pool=0}});return out}
+function info(c){const s=saldo(c.id);const imp=s>0?impagos(c.id):[];const desde=imp[0]?.f;const pagos=db.movs.filter(m=>m.c==c.id&&m.tipo=='pago').map(m=>m.f).sort();const dias=desde?daysSince(desde):0;const lim=+c.lim||+db.lim||0;return{s,desde,dias,atr:s>0&&dias>=(+db.dias||15),lastPago:pagos.pop(),lim,over:lim>0&&s>lim}}
+
+function waMsg(c){const x=info(c);const det=impagos(c.id).slice(-8).map(m=>`• ${dd(m.f)} ${m.det?m.det+' ':''}— ${money(m.resta)}`).join('\n');return db.msg.replace(/\{cliente\}/g,c.n.split(' ')[0]).replace(/\{saldo\}/g,money(x.s)).replace(/\{detalle\}/g,det).replace(/\{negocio\}/g,db.biz)}
+function waOpen(c){if(!c.t){toast('Cargá el WhatsApp del cliente');return}window.open('https://wa.me/'+phone(c.t)+'?text='+encodeURIComponent(waMsg(c)),'_blank')}
+
+function renderCuentas(){
+ $('#welcome').innerHTML=db.seen?'':`<div class="welcome"><h3>¡Bienvenida/o a Mi Fiado! 👋</h3><p>Tu libreta de fiado, pero sin papeles.<br>1. Tocá <b>+ Fiado</b> para anotar lo que se lleva un cliente.<br>2. Cuando paga, tocá <b>Pagó</b> (puede ser una parte).<br>3. Con el botón verde le mandás su saldo por WhatsApp.</p><button class="btn" id="gotit" style="background:#fff;color:var(--dark)">¡Listo, empezar!</button></div>`;
+ const all=db.clientes.map(c=>({c,...info(c)}));
+ const deuda=all.filter(x=>x.s>0);const tot=deuda.reduce((a,x)=>a+x.s,0);const atr=deuda.filter(x=>x.atr).length;
+ $('#sum').innerHTML=!db.clientes.length?'':`<div class="sum"><div><small>Te deben en total</small><b>${money(tot)}</b></div><p>${deuda.length} cliente${deuda.length==1?'':'s'} con deuda${atr?`<br><span style="color:#ff9b9b;font-weight:700">${atr} atrasado${atr==1?'':'s'}</span>`:''}</p></div>`;
+ const q=$('#q').value.trim().toLowerCase();
+ let list=all.filter(x=>!q||x.c.n.toLowerCase().includes(q)||(x.c.t||'').includes(q));
+ if(!q){if(fl=='deuda')list=list.filter(x=>x.s>0);if(fl=='atr')list=list.filter(x=>x.atr)}
+ list.sort((a,b)=>fl=='todos'||q?a.c.n.localeCompare(b.c.n):(b.dias-a.dias)||(b.s-a.s));
+ if(fl=='deuda'&&!q)list.sort((a,b)=>b.s-a.s);
+ $('#clist').innerHTML=list.length?list.map(x=>`<div class="card"><div class="t"><div class="i"><b>${esc(x.c.n)}</b><p>${x.s>0?`Debe desde el ${shortDay(x.desde)} · ${x.dias==0?'hoy':x.dias==1?'hace 1 día':'hace '+x.dias+' días'}`:x.s<0?'Tiene saldo a favor':'Al día ✓'}</p>${x.atr?'<span class="pill p-no">Atrasado</span>':''}${x.over?'<span class="pill p-pend">Pasó el límite</span>':''}${x.lastPago?`<p style="font-size:12px">Último pago: ${shortDay(x.lastPago)}</p>`:''}</div><div class="amt ${x.s>0?'debe':x.s<0?'favor':''}">${money(Math.abs(x.s))}<small>${x.s>0?'debe':x.s<0?'a favor':'saldo'}</small></div></div>
+ <div class="acts"><button class="pri" data-fiar="${x.c.id}">+ Fiado</button>${x.s>0?`<button data-pago="${x.c.id}">$ Pagó</button>`:''}${x.c.t&&x.s>0?`<button class="wa" data-wa="${x.c.id}">WhatsApp</button>`:''}<button data-ver="${x.c.id}">Ver cuenta</button></div></div>`).join(''):`<div class="empty"><b>📒</b>${q?'No encontré clientes con ese nombre.':fl=='deuda'?(db.clientes.length?'¡Nadie te debe nada! 🎉':'Todavía no anotaste fiados.<br>Tocá <b>+ Fiado</b> para empezar.'):fl=='atr'?'No hay clientes atrasados. 👌':'Todavía no hay clientes.'}</div>`;
+}
+
+function range(){const n=new Date();let a,b=iso(n);if(cajaP=='dia')a=b;else if(cajaP=='semana'){const x=new Date(n);x.setDate(n.getDate()-((n.getDay()+6)%7));a=iso(x);const y=new Date(x);y.setDate(x.getDate()+6);b=iso(y)}else{a=iso(new Date(n.getFullYear(),n.getMonth(),1));b=iso(new Date(n.getFullYear(),n.getMonth()+1,0))}return[a,b]}
+function renderCaja(){
+ const[a,b]=range();const ms=db.movs.filter(m=>m.f>=a&&m.f<=b).sort((x,y)=>y.f.localeCompare(x.f)||y.ts-x.ts);
+ const fi=ms.filter(m=>m.tipo=='fiado').reduce((x,m)=>x+ +m.m,0);const pa=ms.filter(m=>m.tipo=='pago');const co=pa.reduce((x,m)=>x+ +m.m,0);
+ const all=db.clientes.map(c=>({c,...info(c)})).filter(x=>x.s>0).sort((x,y)=>y.s-x.s);const tot=all.reduce((x,y)=>x+y.s,0);
+ const by={};pa.forEach(m=>{const k=m.medio||'Efectivo';by[k]=(by[k]||0)+ +m.m});
+ const lbl=cajaP=='dia'?'HOY':cajaP=='semana'?'ESTA SEMANA':'ESTE MES';const mx=Math.max(1,...all.slice(0,6).map(x=>x.s));
+ $('#caja').innerHTML=`<div class="stats"><div class="stat big"><small>COBRADO DE FIADOS ${lbl}</small><b>${money(co)}</b><p>${pa.length} pago${pa.length==1?'':'s'} recibido${pa.length==1?'':'s'}</p></div>
+ <div class="stat"><small>Fiado ${lbl.toLowerCase()}</small><b>${money(fi)}</b></div><div class="stat"><small>Te deben hoy</small><b class="debe">${money(tot)}</b></div>
+ <div class="stat"><small>Clientes con deuda</small><b>${all.length}</b></div><div class="stat"><small>Atrasados</small><b>${all.filter(x=>x.atr).length}</b></div></div>
+ <h2>Quiénes más deben</h2><div class="card">${all.length?all.slice(0,6).map(x=>`<div style="padding:8px 0;cursor:pointer" data-ver="${x.c.id}"><div style="display:flex;justify-content:space-between"><span>${esc(x.c.n)} ${x.atr?'<small style="color:var(--bad);font-weight:800">· atrasado</small>':''}</span><b>${money(x.s)}</b></div><div class="bar"><i style="width:${x.s/mx*100}%"></i></div></div>`).join(''):'<p class="hint" style="margin:0">Nadie te debe nada. 🎉</p>'}</div>
+ <h2>Cobros por medio de pago</h2><div class="card">${Object.keys(by).length?Object.entries(by).map(([k,v])=>`<div class="row"><span>${k}</span><b>${money(v)}</b></div>`).join(''):'<p class="hint" style="margin:0">Sin cobros en este período.</p>'}</div>
+ <h2>Movimientos</h2><div class="card">${ms.length?ms.slice(0,60).map(m=>`<div class="mv"><div class="d"><b>${esc(cl(m.c)?.n||'Cliente')}</b><p>${shortDay(m.f)} · ${m.tipo=='fiado'?'Fiado'+(m.det?': '+esc(m.det):''):'Pago · '+(m.medio||'Efectivo')}</p></div><div class="m ${m.tipo=='fiado'?'debe':'favor'}">${m.tipo=='fiado'?'+':'−'}${money(m.m)}</div></div>`).join(''):'<p class="hint" style="margin:0">Sin movimientos en este período.</p>'}</div>`;
+}
+function renderAjustes(){$('#sBiz').value=db.biz;$('#sMsg').value=db.msg;$('#sDias').value=db.dias;$('#sLim').value=db.lim||0;$('#lastBk').textContent=db.bk?'Última copia: '+new Date(db.bk).toLocaleDateString('es-AR'):'Todavía no hiciste ninguna copia.'}
+function render(){$('#bizName').textContent=db.biz;$('#title').textContent={cuentas:'Cuentas',caja:'Caja',ajustes:'Ajustes'}[view];
+ ['cuentas','caja','ajustes'].forEach(v=>$('#v-'+v).classList.toggle('hide',v!=view));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.v==view));
+ $('#fab').classList.toggle('hide',view=='ajustes');
+ ({cuentas:renderCuentas,caja:renderCaja,ajustes:renderAjustes})[view]()}
+
+function openSheet(h){$('#sheet').innerHTML=h;$('#modal').classList.add('show');$('#sheet').scrollTop=0}
+function close(){$('#modal').classList.remove('show')}
+$('#modal').addEventListener('click',e=>{if(e.target.id=='modal')close()});
+function getClient(n,t){n=n.trim();let x=db.clientes.find(k=>k.n.toLowerCase()==n.toLowerCase());if(!x){x={id:uid(),n,t:'',lim:0};db.clientes.push(x)}if(t)x.t=t.trim();return x}
+function bindCalc(inp,out,extra){const f=()=>{const v=calc($(inp).value);$(out).textContent=isNaN(v)?'Revisá el monto':($(inp).value.match(/[+*x]/i)?'= '+money(v):'');extra&&extra(v)};$(inp).addEventListener('input',f);f()}
+
+function fiarForm(cid,mov){
+ const isNew=!mov;const c=cid?cl(cid):null;mov=mov||{id:uid(),c:cid||'',f:today(),tipo:'fiado',m:'',det:''};
+ openSheet(`<h3>${isNew?'Anotar fiado':'Editar fiado'}</h3>
+ ${c?`<p class="hint" style="margin-top:-6px">${esc(c.n)} · saldo actual ${money(saldo(c.id))}</p>`:`<label class="f">Cliente</label><input class="inp" id="fC" list="dlC" placeholder="Nombre" autocomplete="off"><datalist id="dlC">${db.clientes.map(x=>`<option value="${esc(x.n)}">`).join('')}</datalist>
+ <label class="f">WhatsApp (opcional)</label><input class="inp" id="fT" type="tel" placeholder="Ej: 11 2345 6789">`}
+ <label class="f">Monto</label><input class="inp big" id="fM" inputmode="tel" placeholder="$ 0" value="${mov.m}" autocomplete="off"><div class="calc" id="fMc"></div>
+ <p class="hint" style="margin-top:0">Tip: podés sumar directo, ej. <b>1500+850+2*1200</b></p>
+ <label class="f">¿Qué se llevó? (opcional)</label><input class="inp" id="fD" placeholder="Ej: pan, leche, yerba" value="${esc(mov.det)}">
+ <label class="f">Fecha</label><input class="inp" id="fF" type="date" value="${mov.f}">
+ <p class="hint warn" id="fW"></p>
+ <button class="btn" id="fOk">${isNew?'Anotar fiado':'Guardar cambios'}</button>${isNew?'':'<button class="btn del" id="fDel">Eliminar este fiado</button>'}`);
+ if(!c){$('#fC').addEventListener('change',()=>{const x=db.clientes.find(k=>k.n.toLowerCase()==$('#fC').value.trim().toLowerCase());if(x&&!$('#fT').value)$('#fT').value=x.t||''});setTimeout(()=>$('#fC').focus(),50)}else setTimeout(()=>$('#fM').focus(),50);
+ bindCalc('#fM','#fMc',v=>{const cc=c||db.clientes.find(k=>k.n.toLowerCase()==($('#fC')?.value||'').trim().toLowerCase());if(!cc||isNaN(v)){$('#fW').textContent='';return}const x=info(cc);const ns=x.s+(isNew?v:v-(+mov.m));$('#fW').textContent=x.lim&&ns>x.lim?`⚠️ Con esto pasa su límite de ${money(x.lim)} (quedaría en ${money(ns)})`:''});
+ $('#fOk').onclick=()=>{const v=calc($('#fM').value);if(!v||isNaN(v)||v<=0){toast('Poné un monto válido');return}
+  let cc=c;if(!cc){const n=$('#fC').value.trim();if(!n){toast('Escribí el nombre del cliente');return}cc=getClient(n,$('#fT').value)}
+  Object.assign(mov,{c:cc.id,m:v,det:$('#fD').value.trim(),f:$('#fF').value||today()});if(isNew){mov.ts=Date.now();db.movs.push(mov)}save();close();render();toast('Anotado '+money(v)+' a '+cc.n.split(' ')[0]+' ✓')};
+ if(!isNew)$('#fDel').onclick=()=>{if(!confirm('¿Eliminar este fiado?'))return;db.movs=db.movs.filter(x=>x.id!=mov.id);save();close();render();toast('Fiado eliminado')};
+}
+function pagoForm(cid,mov){
+ const isNew=!mov;const c=cl(cid);const s=saldo(cid);mov=mov||{id:uid(),c:cid,f:today(),tipo:'pago',m:'',medio:'Efectivo'};
+ openSheet(`<h3>${isNew?'Registrar pago':'Editar pago'}</h3><p class="hint" style="margin-top:-6px">${esc(c.n)} · debe ${money(s)}</p>
+ <label class="f">¿Cuánto pagó?</label><input class="inp big" id="pM" inputmode="tel" placeholder="$ 0" value="${mov.m}" autocomplete="off"><div class="calc" id="pMc"></div>
+ ${isNew&&s>0?`<div class="chips"><button id="pAll">Paga todo · ${money(s)}</button>${s>=2000?`<button id="pHalf">La mitad · ${money(Math.round(s/2))}</button>`:''}</div>`:''}
+ <label class="f">Medio de pago</label><div class="chips" id="pP">${['Efectivo','Transferencia','Mercado Pago','Tarjeta'].map(m=>`<button data-m="${m}" class="${m==mov.medio?'on':''}">${m}</button>`).join('')}</div>
+ <label class="f">Fecha</label><input class="inp" id="pF" type="date" value="${mov.f}">
+ <p class="hint" id="pR"></p>
+ <button class="btn" id="pOk" style="background:var(--ok)">${isNew?'Registrar pago':'Guardar cambios'}</button>${isNew?'':'<button class="btn del" id="pDel">Eliminar este pago</button>'}`);
+ let m=mov.medio;$('#pP').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;m=b.dataset.m;$('#pP').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x==b))});
+ bindCalc('#pM','#pMc',v=>{if(isNaN(v)||!v){$('#pR').textContent='';return}const r=s-(isNew?v:v-(+mov.m));$('#pR').innerHTML=r>0?`Le queda debiendo <b>${money(r)}</b>`:r<0?`Le queda <b>${money(-r)}</b> a favor`:'<b style="color:var(--ok)">Queda al día ✓</b>'});
+ if($('#pAll'))$('#pAll').onclick=()=>{$('#pM').value=s;$('#pM').dispatchEvent(new Event('input'))};
+ if($('#pHalf'))$('#pHalf').onclick=()=>{$('#pM').value=Math.round(s/2);$('#pM').dispatchEvent(new Event('input'))};
+ setTimeout(()=>$('#pM').focus(),50);
+ $('#pOk').onclick=()=>{const v=calc($('#pM').value);if(!v||isNaN(v)||v<=0){toast('Poné un monto válido');return}Object.assign(mov,{m:v,medio:m,f:$('#pF').value||today()});if(isNew){mov.ts=Date.now();db.movs.push(mov)}save();close();render();const r=saldo(cid);toast(r>0?'Pago registrado · debe '+money(r):'¡Quedó al día! ✓')};
+ if(!isNew)$('#pDel').onclick=()=>{if(!confirm('¿Eliminar este pago?'))return;db.movs=db.movs.filter(x=>x.id!=mov.id);save();close();render();toast('Pago eliminado')};
+}
+function cuenta(cid){
+ const c=cl(cid);const x=info(c);const ms=movsOf(cid);let run=0;const rows=ms.map(m=>{run+=m.tipo=='fiado'?+m.m:-m.m;return{...m,run}}).reverse();
+ openSheet(`<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><h3 style="margin-bottom:2px">${esc(c.n)}</h3><p class="hint" style="margin:0">${c.t?esc(c.t):'Sin WhatsApp cargado'}${x.lim?' · límite '+money(x.lim):''}</p></div><div class="amt ${x.s>0?'debe':x.s<0?'favor':''}" style="text-align:right;font-weight:800;font-size:22px">${money(Math.abs(x.s))}<small style="display:block;font-size:11px;color:var(--mut)">${x.s>0?'debe':x.s<0?'a favor':'al día'}</small></div></div>
+ ${c.nota?`<p class="hint">📝 ${esc(c.nota)}</p>`:''}
+ <div class="acts" style="margin-top:12px"><button class="pri" data-fiar="${c.id}">+ Fiado</button>${x.s>0?`<button data-pago="${c.id}">$ Pagó</button>`:''}${c.t?`<button class="wa" data-wa="${c.id}">Mandar saldo</button>`:''}<button data-editc="${c.id}">Editar cliente</button></div>
+ <h2>Movimientos</h2><div>${rows.length?rows.map(m=>`<div class="mv"><div class="d"><b>${m.tipo=='fiado'?'Fiado':'Pago'}${m.tipo=='pago'?' · '+(m.medio||'Efectivo'):''}</b><p>${shortDay(m.f)}${m.det?' · '+esc(m.det):''}</p><button data-${m.tipo=='fiado'?'editf':'editp'}="${m.id}">Editar</button></div><div class="m ${m.tipo=='fiado'?'debe':'favor'}">${m.tipo=='fiado'?'+':'−'}${money(m.m)}<small>saldo ${money(m.run)}</small></div></div>`).join(''):'<p class="hint">Sin movimientos todavía.</p>'}</div>
+ <button class="btn sec" id="cClose">Cerrar</button>`);
+ $('#cClose').onclick=close;
+}
+function clForm(c){openSheet(`<h3>Editar cliente</h3><label class="f">Nombre</label><input class="inp" id="kN" value="${esc(c.n)}"><label class="f">WhatsApp</label><input class="inp" id="kT" type="tel" value="${esc(c.t)}">
+ <label class="f">Límite de fiado propio</label><input class="inp" id="kL" type="number" inputmode="numeric" value="${c.lim||''}" placeholder="Usa el general (${db.lim?money(db.lim):'sin límite'})">
+ <label class="f">Nota</label><input class="inp" id="kO" value="${esc(c.nota)}" placeholder="Ej: paga los viernes, vive en la esquina">
+ <button class="btn" id="kOk">Guardar</button><button class="btn del" id="kDel">Eliminar cliente y su cuenta</button>`);
+ $('#kOk').onclick=()=>{c.n=$('#kN').value.trim()||c.n;c.t=$('#kT').value.trim();c.lim=+$('#kL').value||0;c.nota=$('#kO').value.trim();save();render();cuenta(c.id);toast('Cliente guardado ✓')};
+ $('#kDel').onclick=()=>{const s=saldo(c.id);if(!confirm(s>0?`${c.n} todavía te debe ${money(s)}. ¿Eliminar igual su cuenta completa?`:'¿Eliminar a '+c.n+' y todos sus movimientos?'))return;db.clientes=db.clientes.filter(x=>x.id!=c.id);db.movs=db.movs.filter(x=>x.c!=c.id);save();close();render();toast('Cliente eliminado')}}
+
+document.addEventListener('click',e=>{const b=e.target.closest('button,[data-ver]');if(!b)return;const d=b.dataset;const M=id=>db.movs.find(x=>x.id==id);
+ if(b.id=='gotit'){db.seen=true;save();render()}
+ else if(d.v){view=d.v;render();window.scrollTo(0,0)}
+ else if(d.fiar)fiarForm(d.fiar);
+ else if(d.pago)pagoForm(d.pago);
+ else if(d.wa)waOpen(cl(d.wa));
+ else if(d.ver)cuenta(d.ver);
+ else if(d.editc)clForm(cl(d.editc));
+ else if(d.editf){const m=M(d.editf);fiarForm(m.c,m)}
+ else if(d.editp){const m=M(d.editp);pagoForm(m.c,m)}
+ else if(d.fl){fl=d.fl;$('#fSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x==b));renderCuentas()}
+ else if(d.p){cajaP=d.p;$('#cajaSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x==b));renderCaja()}});
+$('#fab').onclick=()=>fiarForm();
+$('#q').oninput=renderCuentas;
+$('#saveCfg').onclick=()=>{db.biz=$('#sBiz').value.trim()||'Mi negocio';db.msg=$('#sMsg').value.trim()||DEF.msg;db.dias=+$('#sDias').value||15;db.lim=+$('#sLim').value||0;save();render();toast('Guardado ✓')};
+$('#exp').onclick=()=>{db.bk=Date.now();save();const blob=new Blob([JSON.stringify(db)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mi-fiado-copia-'+today()+'.json';a.click();renderAjustes();toast('Copia descargada ✓')};
+$('#impBtn').onclick=()=>$('#imp').click();
+$('#imp').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.movs||!x.clientes)throw 0;if(!confirm('Esto reemplaza los datos actuales por los de la copia. ¿Seguimos?'))return;db=x;save();load();render();toast('Copia importada ✓')}catch(err){toast('Ese archivo no es una copia válida')}};r.readAsText(f);e.target.value=''};
+$('#wipe').onclick=()=>{if(confirm('¿Borrar TODOS los clientes, fiados y pagos? No se puede deshacer.')){db=JSON.parse(JSON.stringify(DEF));save();render();toast('Datos borrados')}};
+render();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
